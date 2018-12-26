@@ -1,0 +1,59 @@
+﻿@model WebshopApp.Services.Models.ViewModels.ProductViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    //var picture = Model.Images.FirstOrDefault().FileName;
+}
+
+<title>Product Details</title>
+
+<div class="jumbotron jumbotron-fluid">
+<div class="container">
+    <h3 class="display-4 text-center">Product Details</h3>
+    <hr />
+    <div>
+        <dl class="dl-horizontal text-center">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Price)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ImagePath)
+            </dt>
+            <dd>
+                @*<div>
+                    <image src="@picture"></image>
+                </div>*@
+                @Html.DisplayFor(model => model.ImagePath)
+            </dd>
+        </dl>
+        <hr />
+        <div class="text-center justify-content-around">
+            <a class="btn btn-primary btn-lg" asp-controller="Comment" asp-action="Add" asp-route-id="@Model.Id" role="button">Comment</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="btn btn-dark btn-primary btn-lg" asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" role="button">Edit</a>
+                <a class="btn btn-dark btn-primary btn-lg" asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id" role="button">Delete</a>
+            }
+            <a class="btn btn-dark btn-lg" asp-area="" asp-controller="Comment" asp-action="All" role="button">View Comments</a>
+            <a class="btn btn-dark btn-primary btn-lg" asp-area="" asp-controller="Home" asp-action="Index" role="button">Back</a>
+        </div>
+    </div>
+</div>
+</div>
