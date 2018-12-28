@@ -4,9 +4,9 @@ using System.Text;
 
 namespace WebshopApp.Models
 {
-    public enum Role
+    public enum PaymentMethod
     {
-        User = 1,
-        Admin = 2
+        Credit_card_payment = 1,
+        Payment_by_bank_transfer = 2
     }
 }

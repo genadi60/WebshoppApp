@@ -7,9 +7,7 @@ namespace WebshopApp.Services.DataServices.Contracts
 {
     public interface ICommentsService
     {
-        IEnumerable<CommentViewModel> GetAll();
-
-        IEnumerable<CommentViewModel> GetAllByProduct(int id);
+         AllCommentsByProductViewModel GetAllByProduct(int id);
 
         Task<int> Add(CreateCommentInputModel model);
 

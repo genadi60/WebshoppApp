@@ -1,0 +1,45 @@
+﻿@using System.Linq
+@model WebshopApp.Services.Models.ViewModels.AllCommentsByProductViewModel
+
+@{
+    ViewData["Title"] = "Comments";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var comments = Model.CommentViewModels.ToList();
+
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (comments.Count() > 0)
+{
+    <div class="d-flex justify-content-between w-50">
+        <table class="table table-hover table-bordered">
+        <thead>
+        <tr class="row">
+            <th scope="col" class="col-lg-5 d-flex justify-content-center"><h3>Id</h3></th>
+            <th scope="col" class="col-lg-2 d-flex justify-content-center"><h3>Product name</h3></th>
+            <th scope="col" class="col-lg-2 d-flex justify-content-center"><h3>Content</h3></th>
+            <th scope="col" class="col-lg-2 d-flex justify-content-center"><h3>Product price</h3></th>
+            <th scope="col" class="col-lg-1 d-flex justify-content-center"><h3>Actions</h3></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var comment in comments)
+        {
+            <tr class="row">
+                <th scope="row" class="col-lg-5 d-flex justify-content-center"><h5>@comment.Id</h5></th>
+                <td class="col-lg-2 d-flex justify-content-center"><h5>@comment.Product.Name</h5></td>
+                <td class="col-lg-2 d-flex justify-content-center"><h5>$@comment.Content</h5></td>
+                <td class="col-lg-2 d-flex justify-content-center"><h5>@comment.Product.Price</h5></td>
+                <td class="col-lg-1 d-flex justify-content-center">
+                    <form method="get" action="/comment/details">
+                        <button type="submit" name="id" value="@comment.Id" class="btn btn-dark btn-lg">Details</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </div>
+}
+

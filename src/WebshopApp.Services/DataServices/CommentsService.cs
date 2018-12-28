@@ -20,20 +20,19 @@ namespace WebshopApp.Services.DataServices
             this.commentsRepository = commentsRepository;
         }
 
-        public IEnumerable<CommentViewModel> GetAll()
+        public AllCommentsByProductViewModel GetAllByProduct(int id)
         {
-            var models = this.commentsRepository.All().To<CommentViewModel>();
-
-            return models;
-        }
-
-        public IEnumerable<CommentViewModel> GetAllByProduct(int id)
-        {
-            var models = this.commentsRepository.All()
+            var comments = this.commentsRepository.All()
                 .Where(c => c.ProductId == id)
-                .To<CommentViewModel>();
+                .To<CommentViewModel>()
+                .ToList();
 
-            return models;
+            var model = new AllCommentsByProductViewModel
+            {
+                CommentViewModels = comments
+            };
+
+            return model;
         }
 
         public async Task<int> Add(CreateCommentInputModel model)

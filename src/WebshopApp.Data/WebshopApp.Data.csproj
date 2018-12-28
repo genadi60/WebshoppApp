@@ -37,6 +37,9 @@
     <Compile Update="Migrations\20181225221028_InitialRole.Designer.cs">
       <DependentUpon>20181225221028_InitialRole.cs</DependentUpon>
     </Compile>
+    <Compile Update="Migrations\20181227225157_CartImplement.Designer.cs">
+      <DependentUpon>20181227225157_CartImplement.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

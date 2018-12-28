@@ -80,26 +80,10 @@ namespace WebshopApp.Web
                 await roleStore.CreateAsync(new IdentityRole { Name = "User", NormalizedName = "USER" });
             }
 
-            //var adminUser = context.Users.FirstOrDefault(x => x.UserName == "robko@admin.com") ?? new WebShopUser()
-            //{
-            //    UserName = "robko@admin.com",
-            //    NormalizedUserName = "ROBKO@ADMIN.COM",
-            //    Email = "asd@asd.com",
-            //    NormalizedEmail = "ASD@ASD.COM",
-            //    EmailConfirmed = true,
-            //    LockoutEnabled = false,
-            //    SecurityStamp = Guid.NewGuid().ToString()
-            //};
-
-            //if (!context.Users.Any(u => u.UserName == adminUser.UserName))
-            //{
-            //    var password = new PasswordHasher<IdentityUser>();
-            //    var hashed = password.HashPassword(adminUser, "kamenica");
-            //    adminUser.PasswordHash = hashed;
-            //    var userStore = new UserStore<IdentityUser>(context);
-            //    await userStore.CreateAsync(adminUser);
-            //    await userStore.AddToRoleAsync(adminUser, "ADMIN");
-            //}
+            if (!context.Roles.Any(r => r.Name == "Cashier"))
+            {
+                await roleStore.CreateAsync(new IdentityRole { Name = "Cashier", NormalizedName = "CASHIER" });
+            }
 
             await context.SaveChangesAsync();
         }

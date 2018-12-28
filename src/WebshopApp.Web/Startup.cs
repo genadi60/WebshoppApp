@@ -89,6 +89,13 @@ namespace WebshopApp.Web
                     };
                 });
 
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = new TimeSpan(0, 4, 0, 0);
+                options.Cookie.HttpOnly = true;
+            });
+
             services.AddLogging(lb =>
             {
                 lb.AddConfiguration(Configuration.GetSection("Logging"));
@@ -101,7 +108,11 @@ namespace WebshopApp.Web
             services.AddScoped<IImagesService, ImagesService>();
             services.AddScoped<IBlogsService, BlogsService>();
             services.AddScoped<ICommentsService, CommentsService>();
-
+            services.AddScoped<IOrdersService, OrdersService>();
+            services.AddScoped<IReceiptsService, ReceiptsService>();
+            services.AddScoped<IPaymentsService, PaymentsService>();
+            services.AddScoped<ICartsService, CartsService>();
+            
             services.AddMvc(options =>
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
@@ -133,6 +144,8 @@ namespace WebshopApp.Web
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

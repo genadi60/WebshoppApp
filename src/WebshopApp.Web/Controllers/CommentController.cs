@@ -41,8 +41,6 @@ namespace WebshopApp.Web.Controllers
 
             var id = await this.commentsService.Add(model);
 
-            TempData["id"] = id;
-
             return this.RedirectToAction("Details", new { id = id});
         }
 
@@ -91,6 +89,13 @@ namespace WebshopApp.Web.Controllers
         public IActionResult Deleted()
         {
             return View();
+        }
+
+        public IActionResult All(int id)
+        {
+            var model = this.commentsService.GetAllByProduct(id);
+
+            return View(model);
         }
     }
 }

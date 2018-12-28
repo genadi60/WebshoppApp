@@ -23,6 +23,20 @@ namespace WebshopApp.Data
 
         public DbSet<WebShopUser> WebShopUsers { get; set; }
 
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<Receipt> Receipts { get; set; }
+
+        public DbSet<Payment> Payments { get; set; }
+
+        public DbSet<Cart> Carts { get; set; }
+
+        public DbSet<ClientReceipt> ClientReceipts { get; set; }
+
+        public DbSet<ReceiptOrder> ReceiptOrders { get; set; }
+
+        
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
