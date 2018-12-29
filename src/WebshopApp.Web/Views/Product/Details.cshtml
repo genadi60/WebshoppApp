@@ -62,7 +62,7 @@
                 <a class="btn btn-dark btn-lg" asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" role="button">Edit</a>
                 <a class="btn btn-dark btn-lg" asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id" role="button">Delete</a>
             }
-            <a class="btn btn-dark btn-lg" asp-area="" asp-controller="Comment" asp-action="All" role="button">View Comments</a>
+            <a class="btn btn-dark btn-lg" asp-area="" asp-controller="Comment" asp-action="All" asp-route-id="@Model.Id" role="button">View Comments</a>
             <a class="btn btn-dark btn-lg" asp-area="" asp-controller="Home" asp-action="Index" role="button">Back</a>
         </div>
     </div>

@@ -22,7 +22,7 @@ namespace WebshopApp.Services.DataServices
             _productRepository = productRepository;
         }
 
-        public string Create(int productId, int quantity, string userId = null)
+        public async Task<string> Create(int productId, int quantity, string userId = null)
         {
             var order = new Order
             {
@@ -32,8 +32,8 @@ namespace WebshopApp.Services.DataServices
                 ClientId = userId
             };
 
-            _orderRepository.AddAsync(order);
-            _orderRepository.SaveChangesAsync();
+            await _orderRepository.AddAsync(order);
+            await _orderRepository.SaveChangesAsync();
 
             var product = _productRepository.All()
                 .FirstOrDefault(p => p.Id == productId);

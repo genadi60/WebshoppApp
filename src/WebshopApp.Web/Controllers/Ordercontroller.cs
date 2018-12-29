@@ -30,14 +30,15 @@ namespace WebshopApp.Web.Controllers
 
             string userId = null;
             string orderId = null;
+            Task<string> result = null;
 
             if (isAuthenticated)
             {
                 userId = _userManager.GetUserId(User);
             
-                var result = _ordersService.Create(id, quantity, userId);
+                result = _ordersService.Create(id, quantity, userId);
 
-                orderId = (string) result;
+                orderId = result.Result;
 
                 var user = _userManager.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
 
@@ -48,7 +49,11 @@ namespace WebshopApp.Web.Controllers
                     : RedirectToAction("Create", "Cart", new {userId, orderId});
             }
 
-            return RedirectToAction("Index", "Cart", new {orderId});
+            result = _ordersService.Create(id, quantity, null);
+
+            orderId = result.Result;
+
+            return RedirectToAction("Index", "Cart", new {orderId = orderId});
         }
     }
 }

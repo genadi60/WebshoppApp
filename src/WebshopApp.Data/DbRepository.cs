@@ -28,11 +28,9 @@ namespace WebshopApp.Data
             return this.dbSet;
         }
 
-        public async Task<int> Delete(TEntity entity)
+        public void Delete(TEntity entity)
         {
             this.dbSet.Remove(entity);
-            var result = await this.context.SaveChangesAsync();
-            return result;
         }
 
         public async Task<int> SaveChangesAsync()
@@ -40,10 +38,9 @@ namespace WebshopApp.Data
             return await this.context.SaveChangesAsync();
         }
 
-        public async Task<int> Update(TEntity entity)
+        public void Update(TEntity entity)
         {
             this.dbSet.Update(entity);
-            return await this.context.SaveChangesAsync();
         }
 
         public void Dispose()

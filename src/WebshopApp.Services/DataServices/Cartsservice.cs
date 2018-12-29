@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ using WebshopApp.Models;
 using WebshopApp.Services.DataServices.Contracts;
 using WebshopApp.Services.MappingServices;
 using WebshopApp.Services.Models.ViewModels;
+using SessionExtensions = WebshopApp.Data.Common.SessionExtensions;
 
 namespace WebshopApp.Services.DataServices
 {
@@ -45,23 +47,31 @@ namespace WebshopApp.Services.DataServices
                     cart.Add(order);
                 }
 
-                
-                context.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
+                SessionExtensions.Set(context.Session, "Cart", cart);
+                //context.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
             }
 
-            dynamic cartObject = context.Session.GetString("Cart") == null
-                ? null
-                : JsonConvert.DeserializeObject(context.Session.GetString("Cart"));
+            //dynamic cartObject = context.Session.GetString("Cart") == null
+            //    ? null
+            //    : JsonConvert.DeserializeObject(context.Session.GetString("Cart"));
 
-            string id = cartObject.Id;
+            //string id = cartObject.Id;
 
-            IEnumerable<Order> orders = cartObject.Orders.ToObject<HashSet<Order>>();
+            //IEnumerable<Order> orders = cartObject.Orders.ToObject<HashSet<Order>>();
 
-            var model = new CartViewModel
-            {
-                Id = id,
-                Orders = orders
-            };
+            //var model = new CartViewModel
+            //{
+            //    Id = id,
+            //    Orders = orders
+            //};
+
+            var sesCart = SessionExtensions.Get<Cart>(context.Session, "Cart");
+            sesCart.Orders.Append(_orderRepository.All().FirstOrDefault(o => o.Id.Equals(orderId)));
+            SessionExtensions.Set(context.Session, "Cart", sesCart);
+
+            sesCart = SessionExtensions.Get<Cart>(context.Session, "Cart");
+            var model = Mapper.Map<CartViewModel>(sesCart);
+
             return model;
         }
 
@@ -114,13 +124,15 @@ namespace WebshopApp.Services.DataServices
             var cart = _cartRepository.All()
                 .FirstOrDefault(c => c.Id.Equals(cartId));
 
-            if (cart != null)
+            if (cart == null)
             {
-                cart.Add(order);
+                return 0;
             }
-            
 
-            var result = await _cartRepository.Update(cart);
+            cart.Add(order);
+
+            _cartRepository.Update(cart);
+            var result = await _cartRepository.SaveChangesAsync();
 
             return result;
         }

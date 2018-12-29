@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -13,18 +14,25 @@ namespace WebshopApp.Services.DataServices
 {
     public class CommentsService : ICommentsService
     {
-        private readonly IRepository<Comment> commentsRepository;
+        private readonly IRepository<Comment> _commentsRepository;
 
         public CommentsService(IRepository<Comment> commentsRepository)
         {
-            this.commentsRepository = commentsRepository;
+            _commentsRepository = commentsRepository;
         }
 
         public AllCommentsByProductViewModel GetAllByProduct(int id)
         {
-            var comments = this.commentsRepository.All()
+            var comments = _commentsRepository.All()
                 .Where(c => c.ProductId == id)
                 .To<CommentViewModel>()
+                //.Select(c => new CommentViewModel
+                //{
+                //    Id = c.Id,
+                //    Content = c.Content,
+                //    ProductId = c.ProductId,
+                //    UserId = c.UserId
+                //})
                 .ToList();
 
             var model = new AllCommentsByProductViewModel
@@ -44,17 +52,17 @@ namespace WebshopApp.Services.DataServices
                 UserId = model.UserId
             };
 
-            await this.commentsRepository.AddAsync(comment);
-            await this.commentsRepository.SaveChangesAsync();
+            await _commentsRepository.AddAsync(comment);
+            await _commentsRepository.SaveChangesAsync();
 
-            var id = commentsRepository.All().Single(c => c.Content.Equals(model.Content)).Id;
+            var id = comment.Id;/*_commentsRepository.All().Single(c => c.Content.Equals(model.Content)).Id;*/
 
             return id;
         }
 
         public async Task<int> Edit(CommentViewModel model)
         {
-            var comment = commentsRepository.All()
+            var comment = _commentsRepository.All()
                 .FirstOrDefault(x => x.Id == model.Id); ;
 
             if (comment == null)
@@ -62,19 +70,19 @@ namespace WebshopApp.Services.DataServices
                 throw new KeyNotFoundException();
             }
 
-            //comment.Id = id;
-            //comment.ProductId = model.ProductId;
-            //comment.UserId = model.UserId;
             comment.Content = model.Content;
 
-            var id = await this.commentsRepository.Update(comment);
+            _commentsRepository.Update(comment);
+            await _commentsRepository.SaveChangesAsync();
 
-            return comment.Id;
+            var id = comment.Id;
+
+            return id;
         }
 
         public async Task<int> Delete(int id)
         {
-            var comment = this.commentsRepository.All()
+            var comment = this._commentsRepository.All()
                 .FirstOrDefault(c => c.Id == id);
 
             if (comment == null)
@@ -82,14 +90,16 @@ namespace WebshopApp.Services.DataServices
                 throw new KeyNotFoundException();
             }
 
-            var index = await this.commentsRepository.Delete(comment);
+            _commentsRepository.Delete(comment);
+
+            var index = await _commentsRepository.SaveChangesAsync();
 
             return index;
         }
 
         public CommentViewModel GetById(int id)
         {
-            var model = commentsRepository.All()
+            var model = _commentsRepository.All()
                 .Where(c => c.Id == id)
                 .To<CommentViewModel>()
                 .FirstOrDefault();

@@ -7,6 +7,6 @@ namespace WebshopApp.Services.DataServices.Contracts
 {
     public interface IOrdersService
     {
-        string Create(int productId, int quantity, string userId);
+        Task<string> Create(int productId, int quantity, string userId);
     }
 }
