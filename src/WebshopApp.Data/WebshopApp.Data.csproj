@@ -40,6 +40,12 @@
     <Compile Update="Migrations\20181227225157_CartImplement.Designer.cs">
       <DependentUpon>20181227225157_CartImplement.cs</DependentUpon>
     </Compile>
+    <Compile Update="Migrations\20181228171517_ProductUnits.Designer.cs">
+      <DependentUpon>20181228171517_ProductUnits.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Migrations\20181229005015_CartForeignKey.Designer.cs">
+      <DependentUpon>20181229005015_CartForeignKey.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

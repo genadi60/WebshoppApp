@@ -34,11 +34,6 @@ namespace WebshopApp.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            AutoMapperConfig.RegisterMappings(
-                typeof(ProductViewModel).Assembly,
-                typeof(ProductsCollectionViewModel).Assembly
-            );
-
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -89,7 +84,13 @@ namespace WebshopApp.Web
                     };
                 });
 
-            services.AddDistributedMemoryCache();
+            services.AddDistributedSqlServerCache(options =>
+                {
+                    options.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
+                    options.SchemaName = "dbo";
+                    options.TableName = "Cache";
+                });
+
             services.AddSession(options =>
             {
                 options.IdleTimeout = new TimeSpan(0, 4, 0, 0);
@@ -118,8 +119,11 @@ namespace WebshopApp.Web
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
-            
+
+            AutoMapperConfig.RegisterMappings(
+                typeof(ProductViewModel).Assembly,
+                typeof(ProductsCollectionViewModel).Assembly
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

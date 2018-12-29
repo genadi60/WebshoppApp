@@ -40,6 +40,10 @@ namespace WebshopApp.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<WebShopUser>().HasOne(c => c.Cart)
+                .WithOne(c => c.Client)
+                .HasForeignKey<Cart>(u => u.ClientId);
         }
     }
 }

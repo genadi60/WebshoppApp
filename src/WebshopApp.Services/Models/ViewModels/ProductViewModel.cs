@@ -16,6 +16,8 @@ namespace WebshopApp.Services.Models.ViewModels
 
         public decimal Price { get; set; }
 
+        public int Unit { get; set; }
+
         public string Category { get; set; }
 
         public int CategoryId { get; set; }

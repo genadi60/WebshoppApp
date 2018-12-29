@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebshopApp.Data;
 
 namespace WebshopApp.Data.Migrations
 {
     [DbContext(typeof(WebshopAppContext))]
-    partial class WebshopAppContextModelSnapshot : ModelSnapshot
+    [Migration("20181228171517_ProductUnits")]
+    partial class ProductUnits
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,13 +213,7 @@ namespace WebshopApp.Data.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ClientId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ClientId")
-                        .IsUnique()
-                        .HasFilter("[ClientId] IS NOT NULL");
 
                     b.ToTable("Carts");
                 });
@@ -418,6 +414,8 @@ namespace WebshopApp.Data.Migrations
                     b.Property<string>("RoleId")
                         .IsRequired();
 
+                    b.HasIndex("CartId");
+
                     b.HasDiscriminator().HasValue("WebShopUser");
                 });
 
@@ -464,13 +462,6 @@ namespace WebshopApp.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("WebshopApp.Models.Cart", b =>
-                {
-                    b.HasOne("WebshopApp.Models.WebShopUser", "Client")
-                        .WithOne("Cart")
-                        .HasForeignKey("WebshopApp.Models.Cart", "ClientId");
                 });
 
             modelBuilder.Entity("WebshopApp.Models.ClientReceipt", b =>
@@ -553,6 +544,13 @@ namespace WebshopApp.Data.Migrations
                     b.HasOne("WebshopApp.Models.Receipt", "Receipt")
                         .WithMany("ReceiptOrders")
                         .HasForeignKey("ReceiptId");
+                });
+
+            modelBuilder.Entity("WebshopApp.Models.WebShopUser", b =>
+                {
+                    b.HasOne("WebshopApp.Models.Cart", "Cart")
+                        .WithMany()
+                        .HasForeignKey("CartId");
                 });
 #pragma warning restore 612, 618
         }

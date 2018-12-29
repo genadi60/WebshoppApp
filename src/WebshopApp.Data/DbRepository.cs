@@ -18,9 +18,9 @@ namespace WebshopApp.Data
             this.dbSet = this.context.Set<TEntity>();
         }
 
-        public Task AddAsync(TEntity entity)
+        public async Task AddAsync(TEntity entity)
         {
-            return this.dbSet.AddAsync(entity);
+            await this.dbSet.AddAsync(entity);
         }
 
         public IQueryable<TEntity> All()
@@ -35,15 +35,15 @@ namespace WebshopApp.Data
             return result;
         }
 
-        public Task<int> SaveChangesAsync()
+        public async Task<int> SaveChangesAsync()
         {
-            return this.context.SaveChangesAsync();
+            return await this.context.SaveChangesAsync();
         }
 
-        public Task<int> Update(TEntity entity)
+        public async Task<int> Update(TEntity entity)
         {
             this.dbSet.Update(entity);
-            return this.context.SaveChangesAsync();
+            return await this.context.SaveChangesAsync();
         }
 
         public void Dispose()

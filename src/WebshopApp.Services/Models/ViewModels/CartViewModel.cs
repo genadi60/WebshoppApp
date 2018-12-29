@@ -14,6 +14,8 @@ namespace WebshopApp.Services.Models.ViewModels
 
         public string Id { get; set; }
 
+        public string ClientId { get; set; }
+
         public virtual IEnumerable<Order> Orders { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebshopApp.Models.Base;
 
@@ -15,6 +16,9 @@ namespace WebshopApp.Models
 
         [Required]
         public decimal Price { get; set; }
+
+        [Required]
+        public int Unit { get; set; }
 
         public int CategoryId { get; set; }
 

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebshopApp.Data;
 
 namespace WebshopApp.Data.Migrations
 {
     [DbContext(typeof(WebshopAppContext))]
-    partial class WebshopAppContextModelSnapshot : ModelSnapshot
+    [Migration("20181229005015_CartForeignKey")]
+    partial class CartForeignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
