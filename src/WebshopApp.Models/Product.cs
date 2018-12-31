@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using WebshopApp.Models.Base;
 
 namespace WebshopApp.Models
 {
-    public class Product : BaseModel<int>
+    public class Product
     {
+        public string Id { get; set; }
+
         [Required]
         public string Name { get; set; }
 
@@ -19,6 +22,9 @@ namespace WebshopApp.Models
 
         [Required]
         public int Unit { get; set; }
+
+        [NotMapped]
+        public int Quantity { get; set; }
 
         public int CategoryId { get; set; }
 

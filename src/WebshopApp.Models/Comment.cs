@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using WebshopApp.Models.Base;
 
 namespace WebshopApp.Models
 {
+    [Serializable]
     public class Comment : BaseModel<int>
     {
         [Required]

@@ -29,8 +29,6 @@ namespace WebshopApp.Data
 
         public DbSet<Payment> Payments { get; set; }
 
-        public DbSet<Cart> Carts { get; set; }
-
         public DbSet<ClientReceipt> ClientReceipts { get; set; }
 
         public DbSet<ReceiptOrder> ReceiptOrders { get; set; }
@@ -41,9 +39,7 @@ namespace WebshopApp.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<WebShopUser>().HasOne(c => c.Cart)
-                .WithOne(c => c.Client)
-                .HasForeignKey<Cart>(u => u.ClientId);
+            
         }
     }
 }

@@ -8,7 +8,7 @@ namespace WebshopApp.Services.Models.ViewModels
 {
     public class ProductViewModel : IMapFrom<Product>, IHaveCustomMappings
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public string Name { get; set; }
 

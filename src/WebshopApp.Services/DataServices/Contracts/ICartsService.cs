@@ -10,12 +10,8 @@ namespace WebshopApp.Services.DataServices.Contracts
 {
     public interface ICartsService
     {
-        CartViewModel GetShoppingCart(HttpContext context, string orderId = null);
+        CartViewModel GetShoppingCart(HttpContext context);
 
-        CartViewModel GetShoppingCart(string cartId);
-
-        CartViewModel Create(string clientId, string orderId);
-
-        Task<int> AddToShoppingCart(string cartId, string orderId);
+        CartViewModel AddToShoppingCart(HttpContext context, string productId, int quantity);
     }
 }

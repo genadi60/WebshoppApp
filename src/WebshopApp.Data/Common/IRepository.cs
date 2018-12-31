@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebshopApp.Data.Common
@@ -15,5 +16,7 @@ namespace WebshopApp.Data.Common
         Task<int> SaveChangesAsync();
 
         void Update(TEntity entity);
+
+        void UpdateRange(ICollection<TEntity> entities);
     }
 }

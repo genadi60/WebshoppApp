@@ -22,7 +22,7 @@ namespace WebshopApp.Web.Controllers
 
         public IActionResult Index(int? page)
         {
-            var products = this.productsService.GetAll().ToList();
+            var products = this.productsService.GetAll<ProductViewModel>().ToList();
 
             var viewModels = new List<ProductViewModel>();
 

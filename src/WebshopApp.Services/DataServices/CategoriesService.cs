@@ -61,7 +61,7 @@ namespace WebshopApp.Services.DataServices
                 throw new KeyNotFoundException();
             }
 
-            return this.productsService.GetAllByCategory(categoryId);
+            return this.productsService.GetAllByCategory<ProductViewModel>(categoryId);
         }
     }
 }

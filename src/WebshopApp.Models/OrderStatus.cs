@@ -4,10 +4,10 @@ using System.Text;
 
 namespace WebshopApp.Models
 {
-    public enum Status
+    public enum OrderStatus
     {
-        Active = 1,
-        Completed = 2,
-        Shipped = 3
+        Pending = 1,
+        Shipped = 2,
+        Delivered = 3
     }
 }

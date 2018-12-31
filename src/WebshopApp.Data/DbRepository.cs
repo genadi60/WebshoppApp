@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,11 @@ namespace WebshopApp.Data
         public void Update(TEntity entity)
         {
             this.dbSet.Update(entity);
+        }
+
+        public void UpdateRange(ICollection<TEntity> entities)
+        {
+            this.dbSet.UpdateRange(entities);
         }
 
         public void Dispose()

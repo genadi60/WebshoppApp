@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace WebshopApp.Models
 {
+    [Serializable]
     public class WebShopUser : IdentityUser
     {
         public WebShopUser()
@@ -17,9 +18,6 @@ namespace WebshopApp.Models
         public string RoleId { get; set; }
 
         public string Role { get; set; }
-
-        public string CartId { get; set; }
-        public virtual Cart Cart { get; set; }
 
         public virtual IEnumerable<ClientReceipt> ClientReceipts { get; set; }
     }

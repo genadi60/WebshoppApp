@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using WebshopApp.Data;
 using WebshopApp.Models;
 using WebshopApp.Services.DataServices.Contracts;
+using WebshopApp.Services.Models.InputModels;
 using WebshopApp.Services.Models.ViewModels;
 
 namespace WebshopApp.Web.Controllers
@@ -15,53 +16,30 @@ namespace WebshopApp.Web.Controllers
     {
         private readonly ICartsService _cartsService;
 
-        private readonly SignInManager<WebShopUser> _signInManager;
+        private readonly HttpContext _context;
 
-        private readonly UserManager<WebShopUser> _userManager;
-        
-        public CartController(ICartsService cartsService, SignInManager<WebShopUser> signInManager, UserManager<WebShopUser> userManager)
+        public CartController(ICartsService cartsService, HttpContext context)
         {
             _cartsService = cartsService;
-            _signInManager = signInManager;
-            _userManager = userManager;
+            _context = context;
         }
 
-        public IActionResult Index(string orderId = null)
+
+        public IActionResult Index()
         {
-            CartViewModel cartModel = null;
+            var cartModel = _cartsService.GetShoppingCart(_context);
 
-            if (_signInManager.IsSignedIn(User))
-            {
-                var user = _userManager.Users
-                    .FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-                if (user.CartId == null)
-                {
-                    return RedirectToAction("Create", new {user.Id});
-                }
-
-                cartModel = _cartsService.GetShoppingCart(user.CartId);
-            }
-            else
-            {
-                cartModel = _cartsService.GetShoppingCart(HttpContext, orderId);
-            }
-            
             return View(cartModel);
         }
 
-        public IActionResult Create(string userId, string orderId)
-        {
-            var cartModel = _cartsService.Create(userId, orderId);
-
-            return View("/views/cart/index.cshtml", cartModel);
-        }
-
         [HttpPost]
-        public IActionResult AddToCart(string cartId, string orderId)
+        public IActionResult AddToCart(string productId, int quantity)
         {
-            _cartsService.AddToShoppingCart(cartId, orderId);
-          
-            return RedirectToAction("Index");
+
+            var cartModel = _cartsService.AddToShoppingCart(_context, productId, quantity);
+
+            return View("Index", cartModel);
         }
+
     }
 }

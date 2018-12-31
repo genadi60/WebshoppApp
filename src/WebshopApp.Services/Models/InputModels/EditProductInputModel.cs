@@ -8,7 +8,7 @@ namespace WebshopApp.Services.Models.InputModels
     public class EditProductInputModel : IMapFrom<ProductViewModel>
     {
         [Required]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [MinLength(5)]

@@ -34,6 +34,10 @@ namespace WebshopApp.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            AutoMapperConfig.RegisterMappings(
+                typeof(ProductViewModel).Assembly,
+                typeof(ProductsCollectionViewModel).Assembly);
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -113,17 +117,15 @@ namespace WebshopApp.Web
             services.AddScoped<IReceiptsService, ReceiptsService>();
             services.AddScoped<IPaymentsService, PaymentsService>();
             services.AddScoped<ICartsService, CartsService>();
-            
+            services.AddScoped<HttpContext, HttpContext>();
+
             services.AddMvc(options =>
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            AutoMapperConfig.RegisterMappings(
-                typeof(ProductViewModel).Assembly,
-                typeof(ProductsCollectionViewModel).Assembly
-            );
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -139,9 +141,9 @@ namespace WebshopApp.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-            //Seeder.Seed(context);
-            //Seeder.SeedPictures(context);
-            //Seeder.SeedRoles(context);
+            ////Seeder.Seed(context);
+            ////Seeder.SeedPictures(context);
+            ////Seeder.SeedRoles(context);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             

@@ -17,14 +17,14 @@ namespace WebshopApp.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Upload(int productId, List<IFormFile> files)
+        public IActionResult Upload(string productId, List<IFormFile> files)
         {
             this.imagesService.UploadImagesToProduct(productId, files);
 
             return RedirectToAction("Details", "Product", productId);
         }
 
-        public IEnumerable<Image> GetImagesOfProduct(int productId)
+        public IEnumerable<Image> GetImagesOfProduct(string productId)
         {
             return this.imagesService.GetImagesOfProduct(productId);
         }

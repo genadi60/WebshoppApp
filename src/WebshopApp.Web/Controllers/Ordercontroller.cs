@@ -26,34 +26,34 @@ namespace WebshopApp.Web.Controllers
 
         public IActionResult Create(int id, int quantity)
         {
-            bool isAuthenticated = _signInManager.IsSignedIn(User);
+            //bool isAuthenticated = _signInManager.IsSignedIn(User);
 
-            string userId = null;
-            string orderId = null;
-            Task<string> result = null;
+            //string userId = null;
+            //string orderId = null;
+            //Task<string> result = null;
 
-            if (isAuthenticated)
-            {
-                userId = _userManager.GetUserId(User);
+            //if (isAuthenticated)
+            //{
+            //    userId = _userManager.GetUserId(User);
             
-                result = _ordersService.Create(id, quantity, userId);
+            //    result = _ordersService.Create(id, quantity, userId);
 
-                orderId = result.Result;
+            //    orderId = result.Result;
 
-                var user = _userManager.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+            //    var user = _userManager.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
 
-                var cartId = user.CartId;
+            //    var cartId = user.CartId;
 
-                return cartId != null
-                    ? RedirectToAction("AddToCart", "Cart", new {cartId, orderId})
-                    : RedirectToAction("Create", "Cart", new {userId, orderId});
-            }
+            //    return cartId != null
+            //        ? RedirectToAction("AddToCart", "Cart", new {cartId, orderId})
+            //        : RedirectToAction("Create", "Cart", new {userId, orderId});
+            //}
 
-            result = _ordersService.Create(id, quantity, null);
+            //result = _ordersService.Create(id, quantity, null);
 
-            orderId = result.Result;
+            //orderId = result.Result;
 
-            return RedirectToAction("Index", "Cart", new {orderId = orderId});
+            return RedirectToAction("Index", "Cart");
         }
     }
 }

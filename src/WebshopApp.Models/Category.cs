@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebshopApp.Models.Base;
 
 namespace WebshopApp.Models
 {
+    [Serializable]
     public class Category : BaseModel<int>
     {
         public Category()

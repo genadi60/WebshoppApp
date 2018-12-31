@@ -10,8 +10,8 @@ using WebshopApp.Data;
 namespace WebshopApp.Data.Migrations
 {
     [DbContext(typeof(WebshopAppContext))]
-    [Migration("20181227225157_CartImplement")]
-    partial class CartImplement
+    [Migration("20181230213146_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -208,16 +208,6 @@ namespace WebshopApp.Data.Migrations
                     b.ToTable("Blogs");
                 });
 
-            modelBuilder.Entity("WebshopApp.Models.Cart", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Carts");
-                });
-
             modelBuilder.Entity("WebshopApp.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -261,12 +251,14 @@ namespace WebshopApp.Data.Migrations
 
                     b.Property<int>("ProductId");
 
+                    b.Property<string>("ProductId1");
+
                     b.Property<string>("UserId")
                         .IsRequired();
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId1");
 
                     b.HasIndex("UserId");
 
@@ -283,7 +275,7 @@ namespace WebshopApp.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(255);
 
-                    b.Property<int>("ProductId");
+                    b.Property<string>("ProductId");
 
                     b.HasKey("Id");
 
@@ -297,23 +289,15 @@ namespace WebshopApp.Data.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("CartId");
-
                     b.Property<string>("ClientId");
 
-                    b.Property<int>("ProductId");
-
-                    b.Property<int>("Quantity");
-
-                    b.Property<int>("Status");
+                    b.Property<string>("ShipmentDataId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId");
-
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ShipmentDataId");
 
                     b.ToTable("Orders");
                 });
@@ -325,20 +309,25 @@ namespace WebshopApp.Data.Migrations
 
                     b.Property<decimal>("Cost");
 
+                    b.Property<string>("OrderId");
+
                     b.Property<DateTime>("PaidOn");
 
                     b.Property<int>("PaymentMethod");
 
+                    b.Property<int>("PaymentStatus");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("WebshopApp.Models.Product", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("CategoryId");
 
@@ -348,11 +337,17 @@ namespace WebshopApp.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
+                    b.Property<string>("OrderId");
+
                     b.Property<decimal>("Price");
+
+                    b.Property<int>("Unit");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Products");
                 });
@@ -401,18 +396,36 @@ namespace WebshopApp.Data.Migrations
                     b.ToTable("ReceiptOrders");
                 });
 
+            modelBuilder.Entity("WebshopApp.Models.ShipmentData", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Address");
+
+                    b.Property<string>("City");
+
+                    b.Property<string>("Country");
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("LastName");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShipmentData");
+                });
+
             modelBuilder.Entity("WebshopApp.Models.WebShopUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<string>("CartId");
 
                     b.Property<string>("Role");
 
                     b.Property<string>("RoleId")
                         .IsRequired();
-
-                    b.HasIndex("CartId");
 
                     b.HasDiscriminator().HasValue("WebShopUser");
                 });
@@ -477,8 +490,7 @@ namespace WebshopApp.Data.Migrations
                 {
                     b.HasOne("WebshopApp.Models.Product", "Product")
                         .WithMany("Comments")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProductId1");
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
@@ -490,24 +502,25 @@ namespace WebshopApp.Data.Migrations
                 {
                     b.HasOne("WebshopApp.Models.Product", "Product")
                         .WithMany("Images")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("WebshopApp.Models.Order", b =>
                 {
-                    b.HasOne("WebshopApp.Models.Cart")
-                        .WithMany("Orders")
-                        .HasForeignKey("CartId");
-
                     b.HasOne("WebshopApp.Models.WebShopUser", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId");
 
-                    b.HasOne("WebshopApp.Models.Product", "Product")
+                    b.HasOne("WebshopApp.Models.ShipmentData", "ShipmentData")
                         .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ShipmentDataId");
+                });
+
+            modelBuilder.Entity("WebshopApp.Models.Payment", b =>
+                {
+                    b.HasOne("WebshopApp.Models.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId");
                 });
 
             modelBuilder.Entity("WebshopApp.Models.Product", b =>
@@ -516,6 +529,10 @@ namespace WebshopApp.Data.Migrations
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebshopApp.Models.Order")
+                        .WithMany("Products")
+                        .HasForeignKey("OrderId");
                 });
 
             modelBuilder.Entity("WebshopApp.Models.Receipt", b =>
@@ -542,13 +559,6 @@ namespace WebshopApp.Data.Migrations
                     b.HasOne("WebshopApp.Models.Receipt", "Receipt")
                         .WithMany("ReceiptOrders")
                         .HasForeignKey("ReceiptId");
-                });
-
-            modelBuilder.Entity("WebshopApp.Models.WebShopUser", b =>
-                {
-                    b.HasOne("WebshopApp.Models.Cart", "Cart")
-                        .WithMany()
-                        .HasForeignKey("CartId");
                 });
 #pragma warning restore 612, 618
         }

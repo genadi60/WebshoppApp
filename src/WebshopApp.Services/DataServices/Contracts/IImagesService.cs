@@ -6,8 +6,8 @@ namespace WebshopApp.Services.DataServices.Contracts
 {
     public interface IImagesService
     {
-        void UploadImagesToProduct(int productId, List<IFormFile> files);
+        void UploadImagesToProduct(string productId, List<IFormFile> files);
 
-        IEnumerable<Image> GetImagesOfProduct(int productId);
+        IEnumerable<Image> GetImagesOfProduct(string productId);
     }
 }

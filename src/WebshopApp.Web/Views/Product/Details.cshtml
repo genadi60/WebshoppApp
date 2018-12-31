@@ -48,10 +48,10 @@
         @if (Model.Unit > 0)
         {
             <div class="d-flex justify-content-center  mb-3">
-                <form asp-area="" asp-action="Create" asp-controller="Order" asp-route-id="@Model.Id" method="post" class="form-inline w-50 justify-content-center">
+                <form asp-area="" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@Model.Id" method="post" class="form-inline w-50 justify-content-center">
                     <label for="quantity" class="font-weight-bold mr-1">Quantity</label>
-                    <input class="form-control btn-lg" type="number" min="1" max="@Model.Unit" id="quantity" name="quantity" />
-                    <button class="btn btn-dark btn-lg ml-1" type="submit">Add to cart</button>
+                    <input class="form-control btn-lg" type="number" min="1" max="@Model.Unit" id="quantity" name="quantity"/>
+                    <button class="btn btn-dark btn-lg ml-1" type="submit" value="@Model.Id" name="productId">Add to cart</button>
                 </form>
             </div>
         }

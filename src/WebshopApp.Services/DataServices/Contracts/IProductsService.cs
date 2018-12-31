@@ -7,18 +7,18 @@ namespace WebshopApp.Services.DataServices.Contracts
 {
     public interface IProductsService
     {
-        IEnumerable<ProductViewModel> GetAll();
+        IEnumerable<TEntityViewModel> GetAll<TEntityViewModel>();
 
-        Task<int> Create(int categoryId, string name, string description, decimal price);
+        Task<string> Create(int categoryId, string name, string description, decimal price);
 
-        Task<int> Edit(int id, string categoryName, string name, string description, decimal price);
+        Task<string> Edit(string id, string categoryName, string name, string description, decimal price);
 
-        void Delete(int id);
+        Task Delete(string id);
 
-        TViewModel GetProductById<TViewModel>(int id);
+        TEntityViewModel GetProductById<TEntityViewModel>(string id);
 
-        IEnumerable<ProductViewModel> GetAllByCategory(int categoryId);
+        IEnumerable<TEntityViewModel> GetAllByCategory<TEntityViewModel>(int categoryId);
 
-        bool AddRatingToProduct(int productId, int rating);
+        bool AddRatingToProduct(string productId, int rating);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebshopApp.Data.Common;
@@ -21,12 +22,13 @@ namespace WebshopApp.Services.DataServices
             _categoryRepository = categoryRepository;
         }
 
-        public IEnumerable<ProductViewModel> GetAll() => this.productsRepository.All().To<ProductViewModel>();
+        public IEnumerable<ProductViewModel> GetAll<ProductViewModel>() => this.productsRepository.All().To<ProductViewModel>();
         
-        public async Task<int> Create(int categoryId, string name, string description, decimal price)
+        public async Task<string> Create(int categoryId, string name, string description, decimal price)
         {
             var product = new Product()
             {
+                Id = Guid.NewGuid().ToString(),
                 CategoryId = categoryId,
                 Name = name,
                 Description = description,
@@ -39,7 +41,7 @@ namespace WebshopApp.Services.DataServices
             return product.Id;
         }
 
-        public async Task<int> Edit(int id, string categoryName, string name, string description, decimal price)
+        public async Task<string> Edit(string id, string categoryName, string name, string description, decimal price)
         {
             var product = productsRepository.All()
                 .FirstOrDefault(p => p.Id == id);
@@ -52,41 +54,44 @@ namespace WebshopApp.Services.DataServices
                 throw new KeyNotFoundException();
             }
 
-            //product.Id = id;
             product.Category = category;
             product.Name = name;
             product.Description = description;
             product.Price = price;
+
+            this.productsRepository.Update(product);
 
             await this.productsRepository.SaveChangesAsync();
 
             return product.Id;
         }
 
-        public void Delete(int id)
+        public async Task Delete(string id)
         {
             var product = productsRepository.All().FirstOrDefault(x => x.Id == id);
 
             this.productsRepository.Delete(product);
-            this.productsRepository.SaveChangesAsync();
+            await this.productsRepository.SaveChangesAsync();
         }
 
-        public TViewModel GetProductById<TViewModel>(int id)
+        public TEntityViewModel GetProductById<TEntityViewModel>(string id)
         {
-            var product = this.productsRepository.All().Where(x => x.Id == id)
-                .To<TViewModel>().FirstOrDefault();
+            var productViewModel = this.productsRepository.All()
+                .Where(x => x.Id == id)
+                .To<TEntityViewModel>()
+                .FirstOrDefault();
 
-            return product;
+            return productViewModel;
         }
 
-        public IEnumerable<ProductViewModel> GetAllByCategory(int categoryId) 
+        public IEnumerable<TEntityViewModel> GetAllByCategory<TEntityViewModel>(int categoryId) 
             => this.productsRepository.All()
                 .Where(p => p.CategoryId == categoryId)
-                .To<ProductViewModel>();
+                .To<TEntityViewModel>();
 
-        public bool AddRatingToProduct(int productId, int rating)
+        public bool AddRatingToProduct(string productId, int rating)
         {
-            throw new System.NotImplementedException();
+            return true;
         }
     }
 }

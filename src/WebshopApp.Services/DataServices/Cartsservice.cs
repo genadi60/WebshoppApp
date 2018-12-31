@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using WebshopApp.Data.Common;
 using WebshopApp.Models;
@@ -18,123 +19,102 @@ namespace WebshopApp.Services.DataServices
 {
     public class CartsService : ICartsService
     {
+        private IDistributedCache _cache;
         private readonly IRepository<Cart> _cartRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IOrdersService _ordersService;
         private readonly IRepository<Product> _productRepository;
 
-        public CartsService(IRepository<Cart> cartRepository, IRepository<Order> orderRepository, IRepository<Product> productRepository, IOrdersService ordersService)
+        public CartsService(IRepository<Cart> cartRepository, IRepository<Order> orderRepository, IRepository<Product> productRepository, IOrdersService ordersService, IDistributedCache cache)
         {
             _cartRepository = cartRepository;
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _ordersService = ordersService;
+            _cache = cache;
         }
 
-        public CartViewModel GetShoppingCart(HttpContext context, string orderId = null)
+        public CartViewModel GetShoppingCart(HttpContext context)
         {
-            if (context.Session.Get("Cart") == null)
+            
+            if (SessionExtensions.Get<Cart>(context.Session, "Cart") == null)
             {
                 var cart = new Cart
                 {
                     Id = Guid.NewGuid().ToString()
                 };
+                
+                SessionExtensions.Set(context.Session, "Cart", cart);
+                //context.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
+            }
 
-                if (orderId != null)
+            dynamic cartObject = SessionExtensions.Get<Cart>(context.Session,"Cart") == null
+                ? null
+                : JsonConvert.DeserializeObject<Cart>(context.Session.GetString("Cart"));
+
+            string id = cartObject.Id;
+
+            ICollection<Product> products = cartObject.Products;
+
+            var model = new CartViewModel
+            {
+                Id = id,
+                Products = products,
+                Total = products.Sum(p => p.Price * p.Quantity)
+            };
+            
+            return model;
+        }
+
+       public CartViewModel AddToShoppingCart(HttpContext context, string productId, int quantity)
+       {
+           Cart cart;
+           var id = productId;
+            if (SessionExtensions.Get<Cart>(context.Session, "Cart") == null)
+            {
+                cart = new Cart
                 {
-                    var order = _orderRepository.All()
-                        .FirstOrDefault(o => o.Id.Equals(orderId));
-                    cart.Add(order);
-                }
+                    Id = Guid.NewGuid().ToString()
+                };
 
                 SessionExtensions.Set(context.Session, "Cart", cart);
                 //context.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
             }
 
-            //dynamic cartObject = context.Session.GetString("Cart") == null
-            //    ? null
-            //    : JsonConvert.DeserializeObject(context.Session.GetString("Cart"));
+            dynamic cartObject = context.Session.GetString("Cart") == null
+                ? null
+                : JsonConvert.DeserializeObject<Cart>(context.Session.GetString("Cart"));
 
-            //string id = cartObject.Id;
+            string cartId = cartObject.Id;
 
-            //IEnumerable<Order> orders = cartObject.Orders.ToObject<HashSet<Order>>();
+            ICollection<Product> products = cartObject.Products;
 
-            //var model = new CartViewModel
-            //{
-            //    Id = id,
-            //    Orders = orders
-            //};
+            var product = _productRepository.All()
+                .FirstOrDefault(p => p.Id.Equals(id));
+            product.Quantity = quantity;
+            product.Unit -= quantity;
 
-            var sesCart = SessionExtensions.Get<Cart>(context.Session, "Cart");
-            sesCart.Orders.Append(_orderRepository.All().FirstOrDefault(o => o.Id.Equals(orderId)));
-            SessionExtensions.Set(context.Session, "Cart", sesCart);
+            _productRepository.Update(product);
+            _productRepository.SaveChangesAsync();
 
-            sesCart = SessionExtensions.Get<Cart>(context.Session, "Cart");
-            var model = Mapper.Map<CartViewModel>(sesCart);
+            products.Add(product);
 
-            return model;
-        }
-
-        public CartViewModel GetShoppingCart(string cartId)
-        {
-            var model = _cartRepository.All()
-                .Where(c => c.Id.Equals(cartId))
-                .Select(c => new CartViewModel
-                {
-                    Id = c.Id,
-                    ClientId = c.ClientId,
-                    Orders = c.Orders
-                })
-                .FirstOrDefault();
-
-            return model;
-        }
-
-        [Authorize]
-        public CartViewModel Create(string clientId, string orderId)
-        {
-            var order = _orderRepository.All()
-                .FirstOrDefault(o => o.Id == orderId);
-                
-            var cart = new Cart
+            cart = new Cart
             {
-                Id = Guid.NewGuid().ToString(),
-                ClientId = clientId,
+                Id = cartId,
+                Products = products
             };
-            
-            cart.Add(order);
 
-            _cartRepository.AddAsync(cart);
-            _cartRepository.SaveChangesAsync();
+            SessionExtensions.Set(context.Session, "Cart", cart);
 
             var model = new CartViewModel
             {
-                Id = cart.Id,
-                ClientId = cart.ClientId,
+                Id = cartId,
+                Products = products,
+                Total = products.Sum(p => p.Price * p.Quantity)
             };
 
             return model;
-        }
-
-        public async Task<int> AddToShoppingCart(string cartId, string orderId)
-        {
-            var order = _orderRepository.All()
-                .FirstOrDefault(o => o.Id.Equals(orderId));
-
-            var cart = _cartRepository.All()
-                .FirstOrDefault(c => c.Id.Equals(cartId));
-
-            if (cart == null)
-            {
-                return 0;
-            }
-
-            cart.Add(order);
-
-            _cartRepository.Update(cart);
-            var result = await _cartRepository.SaveChangesAsync();
-
-            return result;
         }
     }
 }

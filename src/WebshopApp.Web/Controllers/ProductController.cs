@@ -28,15 +28,15 @@ namespace WebshopApp.Web.Controllers
             this.imagesService = imagesService;
         }
 
-        public IActionResult Details(int id)
+        public IActionResult Details(string id)
         {
-            var product = this.productsService.GetProductById<ProductViewModel>(id);
+            var productViewModel = this.productsService.GetProductById<ProductViewModel>(id);
 
-            return this.View(product);
+            return this.View(productViewModel);
         }
 
         [Authorize]
-        public IActionResult Edit(int id)
+        public IActionResult Edit(string id)
         {
             this.ViewData["Categories"] = this.categoriesService.GetAll()
                 .Select(x => new SelectListItem
@@ -45,9 +45,9 @@ namespace WebshopApp.Web.Controllers
                     Text = x.Name,
                 });
 
-            var product = this.productsService.GetProductById<EditProductInputModel>(id);
+            var productViewModel = this.productsService.GetProductById<EditProductInputModel>(id);
 
-            return this.View(product);
+            return this.View(productViewModel);
         }
 
         [HttpPost]
@@ -90,7 +90,7 @@ namespace WebshopApp.Web.Controllers
             return this.RedirectToAction("Details", new { id = id });
         }
         
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
             var product = this.productsService.GetProductById<ProductViewModel>(id);
 

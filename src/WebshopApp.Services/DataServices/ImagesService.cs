@@ -23,7 +23,7 @@ namespace WebshopApp.Services.DataServices
             this.imagesRepository = imagesRepository;
         }
 
-        public async void UploadImagesToProduct(int productId, List<IFormFile> files)
+        public async void UploadImagesToProduct(string productId, List<IFormFile> files)
         {
             var product = this.productsRepository.All().FirstOrDefault(x => x.Id == productId);
 
@@ -65,7 +65,7 @@ namespace WebshopApp.Services.DataServices
             }
         }
 
-        public IEnumerable<Image> GetImagesOfProduct(int productId)
+        public IEnumerable<Image> GetImagesOfProduct(string productId)
         {
             var images = this.imagesRepository.All().Where(x => x.ProductId == productId).ToList();
 

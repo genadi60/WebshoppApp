@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace WebshopApp.Models
@@ -9,19 +10,11 @@ namespace WebshopApp.Models
     {
         public Cart()
         {
-            Orders = new HashSet<Order>();
+            Products = new List<Product>();
         }
 
         public string Id { get; set; }
 
-        public string ClientId { get; set; }
-        public WebShopUser Client { get; set; }
-
-        public virtual IEnumerable<Order> Orders { get; set; }
-
-        public void Add(Order order)
-        {
-            Orders.Append(order);
-        }
+        public virtual ICollection<Product> Products { get; set; }
     }
 }
